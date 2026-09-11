@@ -66,3 +66,110 @@ print(y_train.value_counts())
 
 print("\nTesting class distribution:")
 print(y_test.value_counts())
+
+# 8. Summary of Parameters Considered
+print("\n" + "="*55)
+print("             PARAMETERS CONSIDERED")
+print("="*55)
+print("1. Feature / Input Parameters:")
+print("   - sepal_length: Sepal length in cm (continuous numeric)")
+print("   - sepal_width:  Sepal width in cm (continuous numeric)")
+print("   - petal_length: Petal length in cm (continuous numeric)")
+print("   - petal_width:  Petal width in cm (continuous numeric)")
+print("\n2. Target / Output Parameter:")
+print("   - species: Multiclass categorical label")
+print("     Classes: Iris-setosa, Iris-versicolor, Iris-virginica")
+print("\n3. Data Splitting Parameters:")
+print("   - test_size: 0.20 (20% test data, 80% training data)")
+print("   - random_state: 42 (ensures deterministic, reproducible split)")
+print("   - stratify: y (ensures balanced class proportions across splits)")
+print("\n4. Model Hyperparameters Considered:")
+print("   [Logistic Regression]")
+print("   - max_iter: 200 (maximum solver iterations to reach convergence)")
+print("   - solver: 'lbfgs' (Limited-memory Broyden-Fletcher-Goldfarb-Shanno)")
+print("   - C: 1.0 (inverse regularization strength parameter)")
+print("   - random_state: 42 (seed for solver consistency)")
+print("   [Random Forest Classifier]")
+print("   - n_estimators: 100 (number of decision trees in the ensemble)")
+print("   - criterion: 'gini' (impurity measurement criterion)")
+print("   - random_state: 42 (seed for tree building reproducibility)")
+print("="*55)
+
+# 9. Model Training on 80% Training Data
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix,
+    classification_report
+)
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+print("\n--- Model Training on 80% Data ---")
+# Train Logistic Regression
+lr_model = LogisticRegression(max_iter=200, random_state=42)
+lr_model.fit(X_train, y_train)
+print(" Logistic Regression trained.")
+
+# Train Random Forest
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_model.fit(X_train, y_train)
+print(" Random Forest Classifier trained.")
+
+# 10. Model Evaluation on 20% Test Data
+models = {
+    "Logistic Regression": lr_model,
+    "Random Forest": rf_model
+}
+
+for model_name, model in models.items():
+    y_pred = model.predict(X_test)
+    
+    acc = accuracy_score(y_test, y_pred)
+    prec_macro = precision_score(y_test, y_pred, average='macro')
+    rec_macro = recall_score(y_test, y_pred, average='macro')
+    f1_macro = f1_score(y_test, y_pred, average='macro')
+    cm = confusion_matrix(y_test, y_pred, labels=model.classes_)
+    
+    print("\n" + "="*55)
+    print(f" EVALUATION RESULTS: {model_name.upper()} (on 20% Test Set)")
+    print("="*55)
+    print(f"Accuracy:                  {acc * 100:.2f}%")
+    print(f"Precision (Macro Average): {prec_macro * 100:.2f}%")
+    print(f"Recall (Macro Average):    {rec_macro * 100:.2f}%")
+    print(f"F1-Score (Macro Average):  {f1_macro * 100:.2f}%")
+    
+    print("\nConfusion Matrix:")
+    cm_df = pd.DataFrame(cm, index=[f"Actual {c}" for c in model.classes_],
+                             columns=[f"Pred {c}" for c in model.classes_])
+    print(cm_df)
+    
+    print("\nDetailed Classification Report:")
+    print(classification_report(y_test, y_pred))
+
+# 11. Test Set Actual vs Predicted Samples Comparison
+print("\n--- Test Set Actual vs Predicted Comparison (First 10 Samples) ---")
+test_comparison = X_test.copy()
+test_comparison['Actual_Species'] = y_test
+test_comparison['LR_Pred'] = lr_model.predict(X_test)
+test_comparison['RF_Pred'] = rf_model.predict(X_test)
+print(test_comparison.head(10))
+
+# 12. Save Confusion Matrix Heatmap
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+for ax, (model_name, model) in zip(axes, models.items()):
+    y_pred = model.predict(X_test)
+    cm = confusion_matrix(y_test, y_pred, labels=model.classes_)
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                xticklabels=model.classes_, yticklabels=model.classes_, ax=ax)
+    ax.set_title(f"{model_name} Confusion Matrix\nAccuracy: {accuracy_score(y_test, y_pred)*100:.2f}%")
+    ax.set_xlabel("Predicted Species")
+    ax.set_ylabel("Actual Species")
+
+plt.tight_layout()
+plt.savefig("model_evaluation_metrics.png", dpi=300)
+print("\nConfusion matrix visualizations saved to 'model_evaluation_metrics.png'.")
