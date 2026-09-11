@@ -44,7 +44,76 @@ output_file = 'iris_cleaned.csv'
 data.to_csv(output_file, index=False)
 print(f"\nCleaned dataset saved successfully to '{output_file}'.")
 
-# 7. 80/20 Random Train-Test Split
+# 7. Exploratory Data Analysis (EDA) & Parameter Relationships
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set_theme(style="whitegrid", palette="Set2")
+
+print("\n" + "="*55)
+print("       EXPLORATORY DATA ANALYSIS (EDA) & RELATIONSHIPS")
+print("="*55)
+
+# A. Mean and Standard Deviation per Species
+print("\n--- Feature Mean per Species ---")
+species_mean = data.groupby('species')[feature_cols].mean()
+print(species_mean.round(2))
+
+# B. Correlation Matrix among Parameters
+corr_matrix = data[feature_cols].corr()
+print("\n--- Pearson Correlation Matrix ---")
+print(corr_matrix.round(3))
+
+# Visual Plot 1: Correlation Matrix Heatmap
+plt.figure(figsize=(7, 5))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=1, vmin=-1, vmax=1)
+plt.title("Correlation Matrix of Iris Flower Features", fontsize=13, pad=12)
+plt.tight_layout()
+plt.savefig("eda_correlation_matrix.png", dpi=300)
+plt.close()
+print("\n1. Correlation heatmap saved as 'eda_correlation_matrix.png'.")
+
+# Visual Plot 2: Pairplot of All Parameters (Bivariate Relationships + KDE)
+pairplot_fig = sns.pairplot(data, hue='species', diag_kind='kde', markers=["o", "s", "D"], height=2.2)
+pairplot_fig.figure.suptitle("Pairwise Relationships of All Parameters by Species", y=1.02, fontsize=14)
+pairplot_fig.savefig("eda_pairplot.png", dpi=300)
+plt.close()
+print("2. Pairwise feature plot saved as 'eda_pairplot.png'.")
+
+# Visual Plot 3: Boxplots (Distribution & Outlier Analysis per Feature)
+fig, axes = plt.subplots(2, 2, figsize=(12, 9))
+axes = axes.flatten()
+for idx, col in enumerate(feature_cols):
+    sns.boxplot(data=data, x='species', y=col, ax=axes[idx], hue='species', legend=False)
+    axes[idx].set_title(f"Distribution of {col.replace('_', ' ').title()} by Species", fontsize=11)
+    axes[idx].set_xlabel("Species")
+    axes[idx].set_ylabel(f"{col} (cm)")
+plt.suptitle("Feature Distributions and Outlier Identification", fontsize=14)
+plt.tight_layout()
+plt.savefig("eda_boxplots.png", dpi=300)
+plt.close()
+print("3. Feature boxplots saved as 'eda_boxplots.png'.")
+
+# Visual Plot 4: Focused Parameter Relationships (Petal vs Sepal dimensions)
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+sns.scatterplot(data=data, x='petal_length', y='petal_width', hue='species',
+                style='species', s=70, ax=ax1)
+ax1.set_title("Petal Length vs. Petal Width\n(High Separation: r = 0.96)", fontsize=12)
+ax1.set_xlabel("Petal Length (cm)")
+ax1.set_ylabel("Petal Width (cm)")
+
+sns.scatterplot(data=data, x='sepal_length', y='sepal_width', hue='species',
+                style='species', s=70, ax=ax2)
+ax2.set_title("Sepal Length vs. Sepal Width\n(Moderate Overlap: r = -0.11)", fontsize=12)
+ax2.set_xlabel("Sepal Length (cm)")
+ax2.set_ylabel("Sepal Width (cm)")
+
+plt.tight_layout()
+plt.savefig("eda_scatter_relationships.png", dpi=300)
+plt.close()
+print("4. Focused relationship scatter plots saved as 'eda_scatter_relationships.png'.")
+
+# 8. 80/20 Random Train-Test Split
 from sklearn.model_selection import train_test_split
 
 # Separate features (X) and target label (y)
@@ -67,7 +136,7 @@ print(y_train.value_counts())
 print("\nTesting class distribution:")
 print(y_test.value_counts())
 
-# 8. Summary of Parameters Considered
+# 9. Summary of Parameters Considered
 print("\n" + "="*55)
 print("             PARAMETERS CONSIDERED")
 print("="*55)
@@ -95,7 +164,7 @@ print("   - criterion: 'gini' (impurity measurement criterion)")
 print("   - random_state: 42 (seed for tree building reproducibility)")
 print("="*55)
 
-# 9. Model Training on 80% Training Data
+# 10. Model Training on 80% Training Data
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
@@ -106,8 +175,6 @@ from sklearn.metrics import (
     confusion_matrix,
     classification_report
 )
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 print("\n--- Model Training on 80% Data ---")
 # Train Logistic Regression
@@ -120,7 +187,7 @@ rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
 rf_model.fit(X_train, y_train)
 print(" Random Forest Classifier trained.")
 
-# 10. Model Evaluation on 20% Test Data
+# 11. Model Evaluation on 20% Test Data
 models = {
     "Logistic Regression": lr_model,
     "Random Forest": rf_model
@@ -151,7 +218,7 @@ for model_name, model in models.items():
     print("\nDetailed Classification Report:")
     print(classification_report(y_test, y_pred))
 
-# 11. Test Set Actual vs Predicted Samples Comparison
+# 12. Test Set Actual vs Predicted Samples Comparison
 print("\n--- Test Set Actual vs Predicted Comparison (First 10 Samples) ---")
 test_comparison = X_test.copy()
 test_comparison['Actual_Species'] = y_test
@@ -159,7 +226,7 @@ test_comparison['LR_Pred'] = lr_model.predict(X_test)
 test_comparison['RF_Pred'] = rf_model.predict(X_test)
 print(test_comparison.head(10))
 
-# 12. Save Confusion Matrix Heatmap
+# 13. Save Confusion Matrix Heatmap
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 for ax, (model_name, model) in zip(axes, models.items()):
     y_pred = model.predict(X_test)
@@ -172,4 +239,6 @@ for ax, (model_name, model) in zip(axes, models.items()):
 
 plt.tight_layout()
 plt.savefig("model_evaluation_metrics.png", dpi=300)
+plt.close()
 print("\nConfusion matrix visualizations saved to 'model_evaluation_metrics.png'.")
+
