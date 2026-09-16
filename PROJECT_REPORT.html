@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Project Report - Iris Flower Classification System</title>
+    <style>
+        :root {
+            --primary: #2b579a;
+            --primary-dark: #1b365d;
+            --accent: #2e7d32;
+            --text: #2c3e50;
+            --text-light: #596573;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+            --code-bg: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text);
+            line-height: 1.65;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .document-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 60px 70px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+        }
+
+        .header-section {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 24px;
+            margin-bottom: 35px;
+        }
+
+        h1 {
+            color: var(--primary-dark);
+            font-size: 2.2rem;
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            margin-bottom: 18px;
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            background: var(--bg-light);
+            padding: 16px 20px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .metadata-item strong {
+            color: var(--primary-dark);
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-top: 36px;
+            margin-bottom: 16px;
+        }
+
+        h3 {
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        p, ul, ol {
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--bg-light);
+        }
+
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+            border: 1px solid #cbd5e1;
+            border-left: 4px solid var(--primary);
+            padding: 16px;
+            border-radius: 6px;
+        }
+
+        .kpi-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 4px;
+        }
+
+        .kpi-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        pre, code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: var(--code-bg);
+            border-radius: 4px;
+        }
+
+        code {
+            padding: 2px 6px;
+            font-size: 0.9em;
+            color: #d9480f;
+        }
+
+        pre {
+            padding: 16px;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        pre code {
+            color: var(--text);
+            background: none;
+            padding: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 4px;
+            background-color: #e2f0d9;
+            color: #276a3c;
+        }
+
+        .badge-champion {
+            background-color: #fef3c7;
+            color: #92400e;
+            border: 1px solid #f59e0b;
+        }
+
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+            .document-container {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            h2 {
+                page-break-before: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="document-container">
+    <div class="header-section">
+        <h1>🌸 Comprehensive Project Report</h1>
+        <div class="subtitle">Iris Flower Classification System: End-to-End Machine Learning Architecture</div>
+        
+        <div class="metadata-grid">
+            <div class="metadata-item"><strong>Document ID:</strong> PRJ-IRIS-2026-01</div>
+            <div class="metadata-item"><strong>Author:</strong> Dhritiman Siva</div>
+            <div class="metadata-item"><strong>Version:</strong> 1.0.0 (Production)</div>
+            <div class="metadata-item"><strong>Date:</strong> September 15, 2026</div>
+            <div class="metadata-item"><strong>Model:</strong> Random Forest Classifier</div>
+            <div class="metadata-item"><strong>Status:</strong> <span class="badge">Production Certified</span></div>
+        </div>
+    </div>
+
+    <h2>Executive Summary</h2>
+    <p>
+        The <strong>Iris Flower Classification Project</strong> delivers a robust, reproducible Machine Learning pipeline to identify Iris specimens into three botanical taxa—<strong>Iris setosa</strong>, <strong>Iris versicolor</strong>, and <strong>Iris virginica</strong>—leveraging four morphological measurements: sepal length, sepal width, petal length, and petal width.
+    </p>
+
+    <div class="kpi-container">
+        <div class="kpi-card">
+            <div class="kpi-value">96.67%</div>
+            <div class="kpi-label">Test Accuracy</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value">96.66%</div>
+            <div class="kpi-label">Macro F1-Score</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value">85.78%</div>
+            <div class="kpi-label">Petal Influence</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-value">147</div>
+            <div class="kpi-label">Clean Samples</div>
+        </div>
+    </div>
+
+    <h2>1. Data Engineering & Sanitization</h2>
+    <p>Starting from raw spreadsheet data (<code>IRIS.xlsx</code> with 150 instances), an automated pipeline performed quality assurance:</p>
+    <ul>
+        <li><strong>Null Inspection:</strong> 0 null or missing values were found across all fields.</li>
+        <li><strong>Deduplication:</strong> 3 exact duplicate rows were identified and purged, yielding 147 clean, unique observations.</li>
+        <li><strong>Class Balance:</strong> Post-cleaning class distribution remains balanced (Iris-versicolor: 50, Iris-virginica: 49, Iris-setosa: 48).</li>
+        <li><strong>Clean Dataset Export:</strong> Persisted as <code>iris_cleaned.csv</code>.</li>
+    </ul>
+
+    <h2>2. Statistical Profiling & Exploratory Data Analysis</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Feature Name</th>
+                <th>Mean (&mu;)</th>
+                <th>Std Dev (&sigma;)</th>
+                <th>Min</th>
+                <th>25%</th>
+                <th>Median</th>
+                <th>75%</th>
+                <th>Max</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Sepal Length</strong></td>
+                <td>5.86 cm</td>
+                <td>0.83 cm</td>
+                <td>4.30 cm</td>
+                <td>5.10 cm</td>
+                <td>5.80 cm</td>
+                <td>6.40 cm</td>
+                <td>7.90 cm</td>
+            </tr>
+            <tr>
+                <td><strong>Sepal Width</strong></td>
+                <td>3.06 cm</td>
+                <td>0.44 cm</td>
+                <td>2.00 cm</td>
+                <td>2.80 cm</td>
+                <td>3.00 cm</td>
+                <td>3.30 cm</td>
+                <td>4.40 cm</td>
+            </tr>
+            <tr>
+                <td><strong>Petal Length</strong></td>
+                <td>3.78 cm</td>
+                <td>1.76 cm</td>
+                <td>1.00 cm</td>
+                <td>1.60 cm</td>
+                <td>4.40 cm</td>
+                <td>5.10 cm</td>
+                <td>6.90 cm</td>
+            </tr>
+            <tr>
+                <td><strong>Petal Width</strong></td>
+                <td>1.21 cm</td>
+                <td>0.76 cm</td>
+                <td>0.10 cm</td>
+                <td>0.30 cm</td>
+                <td>1.30 cm</td>
+                <td>1.80 cm</td>
+                <td>2.50 cm</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Key Analytical Findings</h3>
+    <ul>
+        <li><strong>Collinear Growth:</strong> Petal Length and Petal Width exhibit extreme positive correlation (<strong>r = +0.96</strong>).</li>
+        <li><strong>Linear Separability:</strong> <em>Iris-setosa</em> forms a completely isolated cluster across petal dimensions with 0% overlap with other species.</li>
+        <li><strong>Non-linear Boundary:</strong> <em>Iris-versicolor</em> and <em>Iris-virginica</em> share close morphological boundaries, requiring ensemble non-linear decision boundaries.</li>
+    </ul>
+
+    <h2>3. Machine Learning Benchmark & Results</h2>
+    <p>Data was split using an <strong>80/20 Stratified Train-Test Split</strong> (117 train samples, 30 test samples, 10 of each class in test).</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>Accuracy</th>
+                <th>Macro Precision</th>
+                <th>Macro Recall</th>
+                <th>Macro F1</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Random Forest Classifier</strong></td>
+                <td><strong>96.67%</strong></td>
+                <td><strong>96.97%</strong></td>
+                <td><strong>96.67%</strong></td>
+                <td><strong>96.66%</strong></td>
+                <td><span class="badge badge-champion">🏆 Champion</span></td>
+            </tr>
+            <tr>
+                <td><strong>Logistic Regression</strong></td>
+                <td>93.33% – 96.67%</td>
+                <td>94.44% – 96.97%</td>
+                <td>93.33% – 96.67%</td>
+                <td>93.27% – 96.66%</td>
+                <td>Baseline</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>4. Feature Importance Decomposition</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Morphological Feature</th>
+                <th>Gini Importance (%)</th>
+                <th>Impact Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td><strong>Petal Length</strong></td>
+                <td><strong>44.31%</strong></td>
+                <td>Dominant root and secondary split criterion</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td><strong>Petal Width</strong></td>
+                <td><strong>41.47%</strong></td>
+                <td>Key separator for versicolor vs virginica</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td><strong>Sepal Length</strong></td>
+                <td><strong>12.15%</strong></td>
+                <td>Secondary discriminatory power</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td><strong>Sepal Width</strong></td>
+                <td><strong>2.08%</strong></td>
+                <td>Marginal discriminatory utility</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>5. Deployment & Inference Demonstration</h2>
+    <p>The champion Random Forest model is serialized to <code>iris_classifier_model.joblib</code> (161 KB). The system provides full probability calibration:</p>
+
+    <pre><code># Quick Inference Snippet
+import joblib, pandas as pd
+
+model = joblib.load('iris_classifier_model.joblib')
+sample = pd.DataFrame([[5.1, 3.5, 1.4, 0.2]], 
+                      columns=['sepal_length', 'sepal_width', 'petal_length', 'petal_width'])
+
+predicted_species = model.predict(sample)[0]        # 'Iris-setosa'
+probabilities = model.predict_proba(sample)[0]      # [1.0, 0.0, 0.0]</code></pre>
+
+    <h2>6. Project Deliverables</h2>
+    <ul>
+        <li><code>IRIS.xlsx</code> &amp; <code>iris_cleaned.csv</code> — Raw and cleaned datasets.</li>
+        <li><code>main.py</code> — Comprehensive end-to-end execution script.</li>
+        <li><code>inspect_model.py</code> — Serialized model inspection and decision tree debugger.</li>
+        <li><code>iris_classifier_model.joblib</code> — Production binary model file.</li>
+        <li>Visual diagnostic charts: <code>eda_correlation_matrix.png</code>, <code>eda_pairplot.png</code>, <code>eda_boxplots.png</code>, <code>eda_scatter_relationships.png</code>, <code>model_evaluation_metrics.png</code>.</li>
+        <li><code>README.md</code> &amp; <code>PROJECT_REPORT.md</code> — Technical and executive documentation.</li>
+    </ul>
+</div>
+
+</body>
+</html>
